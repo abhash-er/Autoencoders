@@ -1,0 +1,12 @@
+[
+{
+  "directory": "/home/abhash/Autoencoders/build",
+  "command": "/bin/g++-9    -g   -march=native -o CMakeFiles/Autoencoders.dir/src/main.cpp.o -c /home/abhash/Autoencoders/src/main.cpp",
+  "file": "/home/abhash/Autoencoders/src/main.cpp"
+},
+{
+  "directory": "/home/abhash/Autoencoders/build",
+  "command": "/bin/g++-9    -g   -march=native -o CMakeFiles/Autoencoders.dir/src/deep_learning/Sigmoid.cpp.o -c /home/abhash/Autoencoders/src/deep_learning/Sigmoid.cpp",
+  "file": "/home/abhash/Autoencoders/src/deep_learning/Sigmoid.cpp"
+}
+]

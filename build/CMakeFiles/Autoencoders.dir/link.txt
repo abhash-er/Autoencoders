@@ -1,0 +1,1 @@
+/bin/g++-9  -g  -rdynamic CMakeFiles/Autoencoders.dir/src/main.cpp.o CMakeFiles/Autoencoders.dir/src/deep_learning/Sigmoid.cpp.o  -o Autoencoders 

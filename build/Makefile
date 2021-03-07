@@ -123,6 +123,73 @@ Autoencoders/fast:
 	$(MAKE) -f CMakeFiles/Autoencoders.dir/build.make CMakeFiles/Autoencoders.dir/build
 .PHONY : Autoencoders/fast
 
+#=============================================================================
+# Target rules for targets named src-deep_learningSigmoid.cpp
+
+# Build rule for target.
+src-deep_learningSigmoid.cpp: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 src-deep_learningSigmoid.cpp
+.PHONY : src-deep_learningSigmoid.cpp
+
+# fast build rule for target.
+src-deep_learningSigmoid.cpp/fast:
+	$(MAKE) -f CMakeFiles/src-deep_learningSigmoid.cpp.dir/build.make CMakeFiles/src-deep_learningSigmoid.cpp.dir/build
+.PHONY : src-deep_learningSigmoid.cpp/fast
+
+src/deep_learning/Sigmoid.o: src/deep_learning/Sigmoid.cpp.o
+
+.PHONY : src/deep_learning/Sigmoid.o
+
+# target to build an object file
+src/deep_learning/Sigmoid.cpp.o:
+	$(MAKE) -f CMakeFiles/Autoencoders.dir/build.make CMakeFiles/Autoencoders.dir/src/deep_learning/Sigmoid.cpp.o
+.PHONY : src/deep_learning/Sigmoid.cpp.o
+
+src/deep_learning/Sigmoid.i: src/deep_learning/Sigmoid.cpp.i
+
+.PHONY : src/deep_learning/Sigmoid.i
+
+# target to preprocess a source file
+src/deep_learning/Sigmoid.cpp.i:
+	$(MAKE) -f CMakeFiles/Autoencoders.dir/build.make CMakeFiles/Autoencoders.dir/src/deep_learning/Sigmoid.cpp.i
+.PHONY : src/deep_learning/Sigmoid.cpp.i
+
+src/deep_learning/Sigmoid.s: src/deep_learning/Sigmoid.cpp.s
+
+.PHONY : src/deep_learning/Sigmoid.s
+
+# target to generate assembly for a file
+src/deep_learning/Sigmoid.cpp.s:
+	$(MAKE) -f CMakeFiles/Autoencoders.dir/build.make CMakeFiles/Autoencoders.dir/src/deep_learning/Sigmoid.cpp.s
+.PHONY : src/deep_learning/Sigmoid.cpp.s
+
+src/main.o: src/main.cpp.o
+
+.PHONY : src/main.o
+
+# target to build an object file
+src/main.cpp.o:
+	$(MAKE) -f CMakeFiles/Autoencoders.dir/build.make CMakeFiles/Autoencoders.dir/src/main.cpp.o
+.PHONY : src/main.cpp.o
+
+src/main.i: src/main.cpp.i
+
+.PHONY : src/main.i
+
+# target to preprocess a source file
+src/main.cpp.i:
+	$(MAKE) -f CMakeFiles/Autoencoders.dir/build.make CMakeFiles/Autoencoders.dir/src/main.cpp.i
+.PHONY : src/main.cpp.i
+
+src/main.s: src/main.cpp.s
+
+.PHONY : src/main.s
+
+# target to generate assembly for a file
+src/main.cpp.s:
+	$(MAKE) -f CMakeFiles/Autoencoders.dir/build.make CMakeFiles/Autoencoders.dir/src/main.cpp.s
+.PHONY : src/main.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -132,6 +199,13 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
 	@echo "... Autoencoders"
+	@echo "... src-deep_learningSigmoid.cpp"
+	@echo "... src/deep_learning/Sigmoid.o"
+	@echo "... src/deep_learning/Sigmoid.i"
+	@echo "... src/deep_learning/Sigmoid.s"
+	@echo "... src/main.o"
+	@echo "... src/main.i"
+	@echo "... src/main.s"
 .PHONY : help
 
 
