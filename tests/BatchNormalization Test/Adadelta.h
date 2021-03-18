@@ -12,6 +12,7 @@ public:
     xt::xarray<double> E_w_updt;
     xt::xarray<double> E_grad;
     bool isFirst;
+    std::string optimizerType = "Adadelta";
 
     Adadelta(double r = 0.95, double eps1 = 0.000001);
 

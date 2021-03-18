@@ -9,6 +9,7 @@
 #include "Adadelta.h"
 
 
+
 class BatchNormalization{
 
     //Parameter -> takes in the name of the function
@@ -19,13 +20,28 @@ public:
     double eps;
     double running_mean;
     double running_var;
+
     std::vector<int> input_shape;
     xt::xarray<double> gamma;
     xt::xarray<double> beta;
-    StochasticGradientDescent sgd;
-    Adam adam;
-    RMSprop rmsprop;
-    Adadelta adadelta;
+
+    xt::xarray<double> X_centered;
+    xt::xarray<double> stddev_inv;
+
+    std::string opt_name;
+
+    StochasticGradientDescent gamma_opt_sgd;
+    Adam gamma_opt_adam;
+    RMSprop gamma_opt_rmsprop;
+    Adadelta gamma_opt_adadelta;
+
+    StochasticGradientDescent beta_opt_sgd;
+    Adam beta_opt_adam;
+    RMSprop beta_opt_rmsprop;
+    Adadelta beta_opt_adadelta;
+
+    bool isFirst;
+     
 
     
     BatchNormalization(double mom);

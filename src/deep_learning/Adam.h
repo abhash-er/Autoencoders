@@ -14,6 +14,7 @@ public:
     bool isFirst;
     double b1;
     double b2;
+    std::string optimizerType = "Adam";
 
     Adam(double lr= 0.001, double b11 = 0.9, double b22 = 0.999);
 

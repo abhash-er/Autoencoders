@@ -12,6 +12,8 @@ public:
     xt::xarray<double> w_updt;
     bool isFirst;
 
+    std::string optimizerType = "SGD";
+
     StochasticGradientDescent(double lr = 0.01, double m = 0);
     xt::xarray<double> update(xt::xarray<double> w, xt::xarray<double> grad_wrt_w);
 
