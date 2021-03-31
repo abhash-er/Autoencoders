@@ -16,22 +16,22 @@ void BatchNormalization::initialize(std::string optimizer_name, StochasticGradie
 
     opt_name = optimizer_name;
     
-    if(optimizer_name == 'SGD'){
+    if(optimizer_name == "SGD"){
         gamma_opt_sgd = StochasticGradientDescent(opt_sgd);
         beta_opt_sgd = StochasticGradientDescent(opt_sgd);
     }
 
-    else if(optimizer_name == 'Adam'){
+    else if(optimizer_name == "Adam"){
         gamma_opt_adam =  Adam(opt_adam);
         beta_opt_adam = Adam(opt_adam);
     }
 
-    else if(optimizer_name == 'RMSprop'){
+    else if(optimizer_name == "RMSprop"){
         gamma_opt_rmsprop = RMSprop(opt_rms_prop);
         beta_opt_rmsprop = RMSprop(opt_rms_prop);
 
     }
-    else if(optimizer_name == 'Adadelta'){
+    else if(optimizer_name == "Adadelta"){
         gamma_opt_adadelta = Adadelta(opt_ada);
         beta_opt_adadelta = Adadelta(opt_ada);
     }
@@ -48,7 +48,7 @@ xt::xarray<double> BatchNormalization::forward_pass(xt::xarray<double> X, bool t
         isFirst = false;
     }
 
-    double mean, var;
+    xt::xarray<double> mean, var;
     if(training && isTrainable){
         mean = xt::mean(X,{0});
         var = xt::variance(X,{0});
@@ -100,8 +100,7 @@ xt::xarray<double> BatchNormalization::backward_pass(xt::xarray<double> accum_gr
         batch_size_temp.push_back(i);
     }
 
-    std::vector<int> meta_size;
-    meta_size = {batch_size_temp.size(),1};
+    std::vector<std::size_t> meta_size = {batch_size_temp.size(),1};
     auto batch_size = xt::adapt(batch_size_temp,meta_size);
 
     accum_grad = (1/batch_size) * gamma_temp * stddev_inv * (batch_size * accum_grad - xt::sum(accum_grad,{0}) - X_centered * xt::pow(stddev_inv,2) * xt::sum(accum_grad * X_centered,{0}));
@@ -113,6 +112,6 @@ std::vector<int> BatchNormalization::output_shape(){
     return input_shape;
 }
 
-void BatchNormalization::set_input_shape(vector<int> shape){
+void BatchNormalization::set_input_shape(std::vector<int> shape){
     input_shape = shape;
 }

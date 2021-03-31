@@ -18,8 +18,8 @@ public:
     bool isTrainable;
     double momentum;
     double eps;
-    double running_mean;
-    double running_var;
+    xt::xarray<double> running_mean;
+    xt::xarray<double> running_var;
 
     std::vector<int> input_shape;
     xt::xarray<double> gamma;
@@ -50,7 +50,7 @@ public:
     void set_input_shape(std::vector<int> shape);
     xt::xarray<double> forward_pass(xt::xarray<double> X, bool training = true);
     xt::xarray<double> backward_pass(xt::xarray<double> accum_grad); 
-    xt::xarray<double> output_shape();
+    std::vector<int> output_shape();
     
 
 };

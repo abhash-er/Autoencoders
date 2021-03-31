@@ -1,14 +1,10 @@
 #include "Dense.h"
 #include <cmath> 
-#include "StochasticGradientDescent.h"
-#include "Adam.h"
-#include "RMSprop.h"
-#include "Adadelta.h"
 #include "xtensor/xrandom.hpp"
 #include "xtensor/xadapt.hpp"
 #include "xtensor-blas/xlinalg.hpp"
 
-Dense::Dense(int units, vector<int> shape){
+Dense::Dense(int units, std::vector<int> shape){
     input_shape = shape;
     n_units = units;
     isTrainable = true;
@@ -21,29 +17,29 @@ void Dense::intialize(std::string optimizer_name, StochasticGradientDescent opt_
 
     opt_name = optimizer_name;
     
-    if(optimizer_name == 'SGD'){
+    if(optimizer_name == "SGD"){
         W_opt_sgd = StochasticGradientDescent(opt_sgd);
         wo_opt_sgd = StochasticGradientDescent(opt_sgd);
     }
 
-    else if(optimizer_name == 'Adam'){
-        W_opt_sgd =  Adam(opt_adam);
-        wo_opt_sgd = Adam(opt_adam);
+    else if(optimizer_name == "Adam"){
+        W_opt_adam =  Adam(opt_adam);
+        wo_opt_adam = Adam(opt_adam);
     }
 
-    else if(optimizer_name == 'RMSprop'){
-        W_opt_sgd = RMSprop(opt_rms_prop);
-        wo_opt_sgd = RMSprop(opt_rms_prop);
+    else if(optimizer_name == "RMSprop"){
+        W_opt_rms = RMSprop(opt_rms_prop);
+        wo_opt_rms = RMSprop(opt_rms_prop);
 
     }
-    else if(optimizer_name == 'Adadelta'){
-        W_opt_sgd = Adadelta(opt_ada);
-        wo_opt_sgd = Adadelta(opt_ada);
+    else if(optimizer_name == "Adadelta"){
+        W_opt_ada = Adadelta(opt_ada);
+        wo_opt_ada = Adadelta(opt_ada);
     } 
 
 }
 
-int Dense::parameters(){
+xt::xarray<double> Dense::parameters(){
     std::vector<int> shape_w;
     std::vector<int> shape_w0;
     for(auto i: W.shape()){
@@ -63,7 +59,7 @@ int Dense::parameters(){
 
 xt::xarray<double> Dense::forward_pass(xt::xarray<double> X, bool training){
     layer_input = X;
-    return xt::linalg::dot(X, W) + w0;
+    return xt::linalg::dot(X, W) + wo;
 }
 
 
@@ -73,14 +69,32 @@ xt::xarray<double> Dense::backward_pass(xt::xarray<double> accum_grad){
     if(isTrainable){
         auto grad_w = xt::linalg::dot(xt::transpose(layer_input),accum_grad);
         auto grad_w0 = xt::sum(accum_grad,{0}, xt::keep_dims | xt::evaluation_strategy::immediate);
+ 
+        if(opt_name == "SGD"){
+            W = W_opt_sgd.update(W,grad_w);
+            wo = wo_opt_sgd.update(wo,grad_w0);
+        }
 
-        //TODO write if-else logic for the opt 
+        else if(opt_name == "Adam"){
+            W = W_opt_adam.update(W,grad_w);
+            wo = wo_opt_adam.update(wo,grad_w0);
+        }
+
+        else if(opt_name == "RMSprop"){
+            W = W_opt_rms.update(W,grad_w);
+            wo = wo_opt_rms.update(wo,grad_w0);
+        }
+
+        else if(opt_name == "Adadelta"){
+            W = W_opt_ada.update(W,grad_w);
+            wo = wo_opt_ada.update(wo,grad_w0);
+        }
     }
 
     accum_grad = xt::linalg::dot(accum_grad,xt::transpose(W));
     return accum_grad;
 }
 
-vector<int> Dense::output_shape(){
+std::vector<int> Dense::output_shape(){
     return {n_units,};
 }

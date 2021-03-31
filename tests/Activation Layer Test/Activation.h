@@ -24,7 +24,7 @@ public:
     void set_input_shape(std::vector<int> shape);
     xt::xarray<double> forward_pass(xt::xarray<double> X, bool training = true);
     xt::xarray<double> backward_pass(xt::xarray<double> accum_grad); 
-    xt::xarray<double> output_shape();
+    std::vector<int> output_shape();
     
 
 };

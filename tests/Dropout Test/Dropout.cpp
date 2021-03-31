@@ -24,6 +24,6 @@ xt::xarray<double> Dropout::backward_pass(xt::xarray<double> accum_grad){
     return accum_grad*mask;
 }
 
-vector<int> Dropout::output_shape(){
+std::vector<int> Dropout::output_shape(){
     return input_shape;
 }

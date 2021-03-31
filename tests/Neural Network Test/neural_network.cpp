@@ -1,14 +1,7 @@
 #include "neural_network.h"
 
-#include "StochasticGradientDescent.h"
-#include "Adam.h"
-#include "RMSprop.h"
-#include "Adadelta.h"
-
-#include "Dense.h"
-#include "Activation.h"
-#include "BatchNormalization.h"
-#include "Dropout.h"
+#include "xtensor/xio.hpp"
+#include "xtensor/xview.hpp"
 
 std::vector<std::vector<xt::xarray<double>>> batch_iterator(xt::xarray<double> X, xt::xarray<double> y, int batch_size = 64){
     int n_samples;
@@ -60,7 +53,7 @@ void NeuralNetwork::add(layer_container layer){
 
 std::vector<double> NeuralNetwork::test_on_batch(xt::xarray<double> X, xt::xarray<double> y){
     auto y_pred = _forward_pass(X,y);
-    auto loss = xt::mean(loss_function.loss(y,y_pred));
+    auto loss = xt::mean(loss_function.loss(y,y_pred))[0];
     auto acc = loss_function.acc(y,y_pred);
 
     return {loss,acc};
@@ -68,7 +61,7 @@ std::vector<double> NeuralNetwork::test_on_batch(xt::xarray<double> X, xt::xarra
 
 std::vector<double> NeuralNetwork::train_on_batch(xt::xarray<double> X, xt::xarray<double> y){
     auto y_pred = _forward_pass(X);
-    auto loss = xt::mean(loss_function.loss(y,y_pred));
+    auto loss = xt::mean(loss_function.loss(y,y_pred))[0];
     auto acc = loss_function.acc(y,y_pred);
     auto loss_grad = loss_function.gradient(y,y_pred);
     _backward_pass(loss_grad);

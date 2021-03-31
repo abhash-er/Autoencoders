@@ -47,8 +47,8 @@ xt::xarray<double> Activation::forward_pass(xt::xarray<double> X, bool training 
     }
 
     
-
 }
+
 xt::xarray<double> Activation::backward_pass(xt::xarray<double> accum_grad){
 
     if(activation_name == "relu"){
@@ -77,7 +77,7 @@ xt::xarray<double> Activation::backward_pass(xt::xarray<double> accum_grad){
     }
 }
 
-xt::xarray<double> Activation::output_shape(){
+std::vector<int> Activation::output_shape(){
     return input_shape;
 }
 
