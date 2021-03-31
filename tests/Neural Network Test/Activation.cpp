@@ -8,6 +8,10 @@
 #include "LeakyReLU.h"
 
 
+Activation::Activation(){
+    activation_name = "relu";
+    isTrainable = true;
+}
 
 Activation::Activation(std::string func_name){
     activation_name = func_name;

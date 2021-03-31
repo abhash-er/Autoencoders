@@ -2,6 +2,7 @@
 
 #include "xtensor/xio.hpp"
 #include "xtensor/xview.hpp"
+#include "xtensor/xadapt.hpp"
 
 std::vector<std::vector<xt::xarray<double>>> batch_iterator(xt::xarray<double> X, xt::xarray<double> y, int batch_size = 64){
     int n_samples;
@@ -41,32 +42,50 @@ NeuralNetwork::NeuralNetwork(optimizer_container optimizer_var,loss_container lo
 
 void NeuralNetwork::set_trainable(bool trainable){
     for(auto layer:layers){
-        layer.isTrainable = trainable;
+        if(layer.layer_name == "Dense"){
+            layer.dense.isTrainable = trainable;
+        }
+        else if(layer.layer_name == "Activation"){
+            layer.act.isTrainable = trainable;
+        }
+        else if(layer.layer_name == "BatchNormalization"){
+            layer.bn.isTrainable = trainable;
+        }
+        else if(layer.layer_name == "Dropout"){
+            layer.dropout.isTrainable = trainable;
+        }
+        else if(layer.layer_name == "Reshape"){
+            layer.reshape.isTrainable = trainable;
+        }
+        
     }
 }
 
 
+
+
 void NeuralNetwork::add(layer_container layer){
+
     layers.push_back(layer);
 }
 
 
 std::vector<double> NeuralNetwork::test_on_batch(xt::xarray<double> X, xt::xarray<double> y){
-    auto y_pred = _forward_pass(X,y);
-    auto loss = xt::mean(loss_function.loss(y,y_pred))[0];
-    auto acc = loss_function.acc(y,y_pred);
+    auto y_pred = _forward_pass(X,false);
+    auto loss = xt::mean(loss_function._loss(y,y_pred))[0];
+    auto acc = loss_function._acc(y,y_pred);
 
-    return {loss,acc};
+    return {loss,acc[0]};
 }
 
 std::vector<double> NeuralNetwork::train_on_batch(xt::xarray<double> X, xt::xarray<double> y){
-    auto y_pred = _forward_pass(X);
-    auto loss = xt::mean(loss_function.loss(y,y_pred))[0];
-    auto acc = loss_function.acc(y,y_pred);
-    auto loss_grad = loss_function.gradient(y,y_pred);
+    auto y_pred = _forward_pass(X,true);
+    auto loss = xt::mean(loss_function._loss(y,y_pred))[0];
+    auto acc = loss_function._acc(y,y_pred);
+    auto loss_grad = loss_function._gradient(y,y_pred);
     _backward_pass(loss_grad);
 
-    return {loss,acc}; 
+    return {loss,acc[0]}; 
 }
 
 std::vector<std::vector<double>> NeuralNetwork::fit(xt::xarray<double> X, xt::xarray<double> y, int n_epochs, int batch_size){
@@ -83,7 +102,7 @@ std::vector<std::vector<double>> NeuralNetwork::fit(xt::xarray<double> X, xt::xa
         }
         std::vector<std::size_t> batch_error_shape = { batch_error.size(), 1 };
         auto batch_error_tensor = xt::adapt(batch_error,batch_error_shape);
-        errors["training"].push_back(xt::mean(batch_error_tensor)); 
+        errors["training"].push_back(xt::mean(batch_error_tensor)[0]); 
 
         if(isValidationPresent){
             auto return_test_batch = test_on_batch(val_set["X"],val_set["y"]);
@@ -99,15 +118,45 @@ std::vector<std::vector<double>> NeuralNetwork::fit(xt::xarray<double> X, xt::xa
 xt::xarray<double> NeuralNetwork::_forward_pass(xt::xarray<double> X, bool isTrainable = true){
     auto layer_output = X;
     for(auto layer:layers){
-        layer_output = layer.forward_pass(layer_output,isTrainable);
+        if(layer.layer_name == "Dense"){
+            layer_output = layer.dense.forward_pass(layer_output,isTrainable);
+        }
+        else if(layer.layer_name == "Activation"){
+            layer_output = layer.act.forward_pass(layer_output,isTrainable);
+        }
+        else if(layer.layer_name == "BatchNormalization"){
+            layer_output = layer.bn.forward_pass(layer_output,isTrainable);
+        }
+        else if(layer.layer_name == "Dropout"){
+            layer_output = layer.dropout.forward_pass(layer_output,isTrainable);
+        }
+        else if(layer.layer_name == "Reshape"){
+            layer_output = layer.reshape.forward_pass(layer_output,isTrainable);
+        }
+        
     }
 
     return layer_output;
 }
 
 void NeuralNetwork::_backward_pass(xt::xarray<double> loss_grad){
-    for(auto layer = layers.end();layer-- != layers.begin()){
-        auto loss_grad = *layer.backward_pass(loss_grad);
+    xt::xarray<double> loss_grad; 
+    for(auto layer = layers.end();layer-- != layers.begin();){        
+        if(layer->layer_name == "Dense"){
+            loss_grad = layer->dense.backward_pass(loss_grad);
+        }
+        else if(layer->layer_name == "Activation"){
+            loss_grad = layer->act.backward_pass(loss_grad);
+        }
+        else if(layer->layer_name == "BatchNormalization"){
+            loss_grad = layer->bn.backward_pass(loss_grad);
+        }
+        else if(layer->layer_name == "Dropout"){
+            loss_grad = layer->dropout.backward_pass(loss_grad);
+        }
+        else if(layer->layer_name == "Reshape"){
+            loss_grad = layer->reshape.backward_pass(loss_grad);
+        }
     }
 }
 

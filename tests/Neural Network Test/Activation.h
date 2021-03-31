@@ -19,7 +19,7 @@ public:
     std::vector<int> input_shape;
     xt::xarray<double> layer_input;
 
-    
+    Activation();
     Activation(std::string func_name);
     void set_input_shape(std::vector<int> shape);
     xt::xarray<double> forward_pass(xt::xarray<double> X, bool training = true);

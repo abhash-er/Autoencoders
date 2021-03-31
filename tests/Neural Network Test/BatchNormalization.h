@@ -43,7 +43,7 @@ public:
     bool isFirst;
      
 
-    
+    BatchNormalization();
     BatchNormalization(double mom);
     void initialize(std::string optimizer_name,StochasticGradientDescent opt_sgd, Adam opt_adam, RMSprop opt_rms_prop, Adadelta opt_ada);
     int parameters();  

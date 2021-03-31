@@ -34,6 +34,8 @@ public:
     RMSprop wo_opt_rms;
     Adadelta wo_opt_ada;
 
+    Dense();
+
     Dense(int units, std::vector<int> shape);
 
     void intialize(std::string optimizer_name, StochasticGradientDescent opt_sgd, Adam opt_adam, RMSprop opt_rms_prop, Adadelta opt_ada);

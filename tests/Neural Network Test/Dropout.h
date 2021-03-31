@@ -17,6 +17,7 @@ public:
     xt::xarray<double> mask;
     bool isTrainable;
 
+    Dropout();
     Dropout(double p_var);
     xt::xarray<double> forward_pass(xt::xarray<double> X, bool training);
     xt::xarray<double> backward_pass(xt::xarray<double> accum_grad);

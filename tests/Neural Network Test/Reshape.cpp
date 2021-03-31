@@ -1,5 +1,11 @@
 #include "Reshape.h"
 
+Reshape::Reshape(){
+    input_shape = {128,128};
+    isTrainable = true;
+    shape = {128,128};
+}
+
 Reshape::Reshape(std::vector<int> shape, std::vector<int> input_shape){
     input_shape = input_shape;
     isTrainable = true;

@@ -21,28 +21,106 @@
 #include "Dropout.h"
 #include "Reshape.h"
 
+#include "CrossEntropy.h"
+#include "SquareLoss.h"
+
 class layer_container: public Dense, public Activation, public BatchNormalization, public Dropout{
+ public:   
+    std::string layer_name;
     Dense dense;
     Activation act;
     BatchNormalization bn;
     Dropout dropout;
+    Reshape reshape;
 
-    layer_container(Dense x){
-        x= Dense(x.n_units,x.input_shape);
+
+    layer_container(){
+        layer_name = "Dense";
+        dense = Dense();
+    }
+
+    layer_container(Dense a){
+        layer_name = "Dense";
+        dense = a;
+    }
+
+    layer_container(Activation a){
+        layer_name = "Activation";
+        act = a;
+    }
+
+    layer_container(BatchNormalization a){
+        layer_name = "BatchNormalization";
+        bn = a;
+    }
+
+    layer_container(Dropout a){
+        layer_name = "Dropout";
+        dropout = a;
+    }
+
+    layer_container(Reshape a){
+        layer_name = "Reshape";
+        reshape = a;
     }
     
 
     
 };
 
-class loss_container:public Sigmoid, public SoftMax, public Tanh, public SoftPlus{
-    loss_container(Sigmoid x){}
-    loss_container(SoftMax y){}
-    loss_container(Tanh z){}
-    loss_container(SoftPlus w){}
+class loss_container:public CrossEntropy, public SquareLoss{
+public:
+    CrossEntropy cross;
+    SquareLoss square;
+    std::string loss_name;
+
+    loss_container(){
+        loss_name = "CrossEntropy";
+        cross = CrossEntropy();
+    }
+
+    loss_container(CrossEntropy loss_cross){
+        loss_name = "CrossEntropy";
+        cross = loss_cross;
+    }
+
+    loss_container(SquareLoss loss_sqaure){
+        loss_name = "SqaureLoss";
+        square = loss_sqaure;
+    }
+
+    xt::xarray<double> _loss(xt::xarray<double> y, xt::xarray<double> y_pred){
+        if(loss_name == "CrossEntropy"){
+            return cross.loss(y,y_pred);
+        }
+        else{
+            return square.loss(y,y_pred);
+        }
+    }
+
+    xt::xarray<double> _acc(xt::xarray<double> y, xt::xarray<double> y_pred){
+        if(loss_name == "CrossEntropy"){
+            return cross.acc(y,y_pred);
+        }
+        else{
+            return square.acc(y,y_pred);
+        }
+    } 
+
+    xt::xarray<double> _gradient(xt::xarray<double> y, xt::xarray<double> y_pred){
+        if(loss_name == "CrossEntropy"){
+            return cross.gradient(y,y_pred);
+        }
+        else{
+            return square.gradient(y,y_pred);
+        }
+    } 
+
 };
 
 class optimizer_container:public StochasticGradientDescent, public Adam, public RMSprop, public Adadelta{
+public:
+    optimizer_container(){}
     optimizer_container(StochasticGradientDescent x){}
     optimizer_container(Adam y){}
     optimizer_container(Adadelta z){}
