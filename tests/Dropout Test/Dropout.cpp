@@ -1,6 +1,10 @@
 #include "Dropout.h"
 #include "xtensor/xrandom.hpp"
 
+Dropout::Dropout(){
+    p = 0.2;
+}
+
 Dropout::Dropout(double p_var = 0.2){
     p = p_var;
 }

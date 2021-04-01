@@ -43,9 +43,9 @@ public:
     bool isFirst;
      
 
-    
+    BatchNormalization();
     BatchNormalization(double mom);
-    void initialize(std::string optimizer_name,StochasticGradientDescent opt_sgd, Adam opt_adam, RMSprop opt_rms_prop, Adadelta opt_ada);
+    void initialize(std::string optimizer_name,StochasticGradientDescent opt_sgd = StochasticGradientDescent(), Adam opt_adam = Adam(), RMSprop opt_rms_prop = RMSprop(), Adadelta opt_ada = Adadelta());
     int parameters();  
     void set_input_shape(std::vector<int> shape);
     xt::xarray<double> forward_pass(xt::xarray<double> X, bool training = true);

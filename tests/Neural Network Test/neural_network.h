@@ -24,7 +24,7 @@
 #include "CrossEntropy.h"
 #include "SquareLoss.h"
 
-class layer_container: public Dense, public Activation, public BatchNormalization, public Dropout{
+class layer_container: public Dense, public Activation, public BatchNormalization, public Dropout, public Reshape{
  public:   
     std::string layer_name;
     Dense dense;
@@ -63,7 +63,6 @@ class layer_container: public Dense, public Activation, public BatchNormalizatio
         layer_name = "Reshape";
         reshape = a;
     }
-    
 
     
 };
@@ -120,11 +119,49 @@ public:
 
 class optimizer_container:public StochasticGradientDescent, public Adam, public RMSprop, public Adadelta{
 public:
-    optimizer_container(){}
-    optimizer_container(StochasticGradientDescent x){}
-    optimizer_container(Adam y){}
-    optimizer_container(Adadelta z){}
-    optimizer_container(RMSprop w){}
+    StochasticGradientDescent sgd;
+    Adam adam;
+    Adadelta ada;
+    RMSprop rms;
+    std::string opt_name;
+    
+
+    optimizer_container(){
+        opt_name = "Adam";
+        adam = Adam(); 
+    }
+    optimizer_container(StochasticGradientDescent x){
+        opt_name = "SGD";
+        sgd = x;
+    }
+    optimizer_container(Adam y){
+        opt_name = "Adam";
+        adam = y;
+    }
+
+    optimizer_container(Adadelta z){
+        opt_name = "Adadelta";
+        ada = z;
+    }
+    optimizer_container(RMSprop w){
+        opt_name = "RMSProp";
+        rms = w;
+    }
+
+    xt::xarray<double> update(xt::xarray<double> w, xt::xarray<double> grad_wrt_w){
+        if(opt_name == "Adam"){
+            return adam.update(w,grad_wrt_w);
+        }
+        else if(opt_name == "SGD"){
+            return sgd.update(w, grad_wrt_w);
+        }
+        else if(opt_name == "Adadelta"){
+            return ada.update(w, grad_wrt_w);
+        }
+        else if(opt_name == "RMSProp"){
+            return rms.update(w, grad_wrt_w);
+        }
+    }
 };
 
 
@@ -135,12 +172,13 @@ public:
 
     std::vector<layer_container> layers;
     loss_container loss_function;
+    std::vector<int> prev_out_shape;
 
     std::unordered_map<std::string, xt::xarray<double>> val_set;
     std::unordered_map<std::string, std::vector<double>> errors;
     bool isValidationPresent;
-
-    NeuralNetwork(optimizer_container optimizer_var,loss_container loss,xt::xarray<double> X, xt::xarray<double> y, bool isValidation);
+    
+    NeuralNetwork(optimizer_container optimizer_var = optimizer_container(Adam()),loss_container loss = loss_container(SquareLoss()),xt::xarray<double> X = {0}, xt::xarray<double> y = {0}, bool isValidation = false);
     void set_trainable(bool trainable);
     void add(layer_container layer);
     
@@ -149,7 +187,7 @@ public:
     std::vector<std::vector<double>> fit(xt::xarray<double> X, xt::xarray<double> y, int n_epochs, int batch_size);
     xt::xarray<double> _forward_pass(xt::xarray<double> X, bool isTrainable);
     void _backward_pass(xt::xarray<double> loss_grad);
-    void summary(std::string name);
+    void summary(std::string name);//not implemented
     xt::xarray<double> predict(xt::xarray<double> X);
 };
 

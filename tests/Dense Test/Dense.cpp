@@ -4,6 +4,13 @@
 #include "xtensor/xadapt.hpp"
 #include "xtensor-blas/xlinalg.hpp"
 
+
+Dense::Dense(){
+    input_shape = {128,128};
+    n_units = 64;
+    isTrainable = true;
+}
+
 Dense::Dense(int units, std::vector<int> shape){
     input_shape = shape;
     n_units = units;

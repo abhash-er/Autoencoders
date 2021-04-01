@@ -1,6 +1,15 @@
 #include "BatchNormalization.h"
 #include <xtensor/xadapt.hpp>
 
+BatchNormalization::BatchNormalization(){
+    momentum = 0.99;
+    eps = 0.01;
+    running_mean = 0;
+    running_var = 0;
+    isFirst = true;
+    isTrainable = true;
+}
+
 BatchNormalization::BatchNormalization(double mom =0.99){
     momentum = mom;
     eps = 0.01;

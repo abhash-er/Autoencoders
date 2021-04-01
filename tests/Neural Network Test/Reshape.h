@@ -19,6 +19,9 @@ public:
     xt::xarray<double> forward_pass(xt::xarray<double> X, bool training);
     xt::xarray<double> backward_pass(xt::xarray<double> accum_grad);
     std::vector<int> output_shape();
+    void set_input_shape(std::vector<int> shape){
+        input_shape = shape;
+    }
 
 };
 

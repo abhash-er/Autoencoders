@@ -66,7 +66,37 @@ void NeuralNetwork::set_trainable(bool trainable){
 
 void NeuralNetwork::add(layer_container layer){
 
+    if(layer.layer_name == "Dense"){
+        layer.dense.set_input_shape(prev_out_shape);
+        prev_out_shape = layer.dense.output_shape();
+    }
+    else if(layer.layer_name == "Activation"){
+        layer.act.set_input_shape(prev_out_shape);
+        prev_out_shape = layer.act.output_shape();
+    }
+    else if(layer.layer_name == "BatchNormalization"){
+        layer.bn.set_input_shape(prev_out_shape);
+        prev_out_shape = layer.bn.output_shape();
+    }
+    else if(layer.layer_name == "Dropout"){
+        layer.dropout.set_input_shape(prev_out_shape);
+        prev_out_shape = layer.dropout.output_shape();
+    }
+    else if(layer.layer_name == "Reshape"){
+        layer.reshape.set_input_shape(prev_out_shape);
+        prev_out_shape = layer.reshape.output_shape();
+    }
+
+    //initialize 
+    if(layer.layer_name == "Dense"){
+        layer.dense.intialize(optimizer.opt_name,optimizer.sgd,optimizer.adam,optimizer.rms,optimizer.ada);
+    }
+    else if(layer.layer_name == "BatchNormalization"){
+        layer.bn.initialize(optimizer.opt_name,optimizer.sgd,optimizer.adam,optimizer.rms,optimizer.ada);
+    }
+
     layers.push_back(layer);
+    
 }
 
 
